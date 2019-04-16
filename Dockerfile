@@ -14,9 +14,11 @@ RUN rm -rf ${build_root_fs}/etc/unbound/unbound.conf.d
 
 FROM alpine:3.9.3
 COPY --from=unbound-builder /builtrootfs /
-RUN apk add --update bind-tools libevent expat
+RUN apk add --update bind-tools libevent expat libcap
 RUN addgroup -g 1000 unbound && adduser -D -u 1000 -G unbound -s /bin/sh unbound
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/apk/* || true
-#USER unbound
-#WORKDIR /home/unbound
-CMD ["/sbin/unbound"]
+RUN mkdir -p /var/lib/unbound
+RUN setcap CAP_NET_BIND_SERVICE=+eip /sbin/unbound
+USER unbound
+WORKDIR /home/unbound
+CMD ["/sbin/unbound", "-p"]
