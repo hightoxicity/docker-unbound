@@ -21,4 +21,4 @@ RUN mkdir -p /var/lib/unbound
 RUN setcap CAP_NET_BIND_SERVICE=+eip /sbin/unbound
 USER unbound
 WORKDIR /home/unbound
-CMD ["/sbin/unbound", "-p"]
+CMD ["/sbin/unbound", "-p", "-d"]
